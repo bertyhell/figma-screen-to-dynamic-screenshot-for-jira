@@ -1,8 +1,12 @@
 function saveOptions() {
-	const input = document.querySelector('#figmaAccessTokenInput');
+	const figmaTokenInput = document.querySelector('#figmaAccessTokenInput');
+	const includeFigmaScreenLinkCheckbox = document.querySelector('#includeFigmaScreenLink');
 
 	chrome.storage.sync.set(
-		{ token: input?.value },
+		{
+			token: figmaTokenInput?.value,
+			includeFigmaScreenLink: includeFigmaScreenLinkCheckbox.checked,
+		},
 		() => {
 			// Update status to let user know options were saved.
 			const button = document.querySelector('#saveOptionsButton');
@@ -16,9 +20,10 @@ function saveOptions() {
 
 const restoreOptions = () => {
 	chrome.storage.sync.get(
-		{ token: "" },
+		{ token: "", includeFigmaScreenLink: false },
 		(options) => {
 			document.getElementById('#saveOptionsButton').value = options.token;
+			document.getElementById('#includeFigmaScreenLink').checked = options.includeFigmaScreenLink;
 		}
 	);
 };

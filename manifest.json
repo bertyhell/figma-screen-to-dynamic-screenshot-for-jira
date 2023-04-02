@@ -41,7 +41,8 @@
     "clipboardWrite",
     "activeTab",
     "scripting",
-    "storage"
+    "storage",
+    "notifications"
   ],
   "host_permissions": [
     "https://www.figma.com/file/*",
