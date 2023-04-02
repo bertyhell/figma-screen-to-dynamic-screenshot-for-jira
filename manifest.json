@@ -26,26 +26,11 @@
   "background": {
     "service_worker": "src/background/background.js"
   },
-  "content_scripts": [
-    {
-      "matches": [
-        "https://www.figma.com/file/*",
-        "https://figma.com/file/*"
-      ],
-      "js": [
-        "src/content/content.js"
-      ]
-    }
-  ],
   "permissions": [
     "clipboardWrite",
     "activeTab",
     "scripting",
     "storage",
     "notifications"
-  ],
-  "host_permissions": [
-    "https://www.figma.com/file/*",
-    "https://figma.com/file/*"
   ]
 }
