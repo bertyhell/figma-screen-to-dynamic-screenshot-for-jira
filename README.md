@@ -10,7 +10,7 @@ So you can paste it into a jira ticket and the screenshot will always be up-to-d
 * Install the extension
 * Pin the extension, so it is always visible (optional)
   * ![Shows arrow pointing to the extensions button in chrome and an arrow pointing to the pin extension button](readme_assets/pin-extension.png)
-* Right-click the extension button
+* Right-click the extension button and click on options
   * ![icon in chrome with arrow pointing to it](readme_assets/extension-icon.png)
 * Set your [figma personal token](https://help.figma.com/hc/en-us/articles/8085703771159-Manage-personal-access-tokens), so the extension can make calls to the Figma API
   * ![screenshot of the options screen containing the figma token input field, a checkbox to include the link and a save button](readme_assets/options.png)
