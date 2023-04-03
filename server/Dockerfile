@@ -29,7 +29,7 @@ COPY --chown=node:node --from=build /usr/src/app .
 
 RUN npm ci --omit=dev && npm cache clean --force
 
-EXPOSE 8080 
+EXPOSE 8080
 
 # Start the server using the production build
 CMD [ "npm", "run", "start:prod" ]
