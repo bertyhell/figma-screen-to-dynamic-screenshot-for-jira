@@ -1,15 +1,15 @@
 function saveOptions() {
-	const figmaTokenInput = document.querySelector('#figmaAccessTokenInput');
-	const includeFigmaScreenLinkCheckbox = document.querySelector('#includeFigmaScreenLink');
+	const serverUrlInput = document.getElementById('serverUrlInput');
+	const includeFigmaScreenLinkCheckbox = document.getElementById('includeFigmaScreenLink');
 
-	chrome.storage.sync.set(
+	chrome.storage.local.set(
 		{
-			token: figmaTokenInput?.value,
+			serverUrl: serverUrlInput?.value,
 			includeFigmaScreenLink: includeFigmaScreenLinkCheckbox.checked,
 		},
 		() => {
 			// Update status to let user know options were saved.
-			const button = document.querySelector('#saveOptionsButton');
+			const button = document.getElementById('saveOptionsButton');
 			button.textContent = 'Saved successfully';
 			setTimeout(() => {
 				button.textContent = 'Save';
@@ -19,14 +19,16 @@ function saveOptions() {
 }
 
 const restoreOptions = () => {
-	chrome.storage.sync.get(
-		{ token: "", includeFigmaScreenLink: false },
+	chrome.storage.local.get(
+		{ serverUrl: "", includeFigmaScreenLink: false },
 		(options) => {
-			document.getElementById('#saveOptionsButton').value = options.token;
-			document.getElementById('#includeFigmaScreenLink').checked = options.includeFigmaScreenLink;
+			document.getElementById('serverUrlInput').value = options.serverUrl;
+			document.getElementById('includeFigmaScreenLink').checked = options.includeFigmaScreenLink;
 		}
 	);
 };
 
-document.addEventListener('DOMContentLoaded', restoreOptions);
-document.querySelector('#saveOptionsButton').addEventListener('click', saveOptions);
+document.addEventListener('DOMContentLoaded', () => {
+	restoreOptions();
+	document.getElementById('saveOptionsButton').addEventListener('click', saveOptions);
+});
