@@ -1,36 +1,35 @@
-FROM debian:bullseye as builder
+FROM node:18-alpine As build
 
-ARG NODE_VERSION=18.15.0
+WORKDIR /usr/src/app
 
-RUN apt-get update; apt install -y curl python-is-python3 pkg-config build-essential
-RUN curl https://get.volta.sh | bash
-ENV VOLTA_HOME /root/.volta
-ENV PATH /root/.volta/bin:$PATH
-RUN volta install node@${NODE_VERSION}
+COPY package*.json ./
 
-#######################################################################
-
-RUN mkdir /app
-WORKDIR /app
-
-# NPM will not install any package listed in "devDependencies" when NODE_ENV is set to "production",
-# to install all modules: "npm install --production=false".
-# Ref: https://docs.npmjs.com/cli/v9/commands/npm-install#description
-
-ENV NODE_ENV production
+# Run the build command which creates the production bundle
+RUN npm i
 
 COPY . .
 
-RUN npm install && npm run build
-FROM debian:bullseye
+RUN npm install -g @nestjs/cli
+RUN npm run build
 
-LABEL fly_launch_runtime="nodejs"
-
-COPY --from=builder /root/.volta /root/.volta
-COPY --from=builder /app /app
-
-WORKDIR /app
+# Set NODE_ENV environment variable
 ENV NODE_ENV production
-ENV PATH /root/.volta/bin:$PATH
 
+USER node
+
+###################
+# PRODUCTION
+###################
+
+FROM node:18-alpine As production
+
+
+# Copy the bundled code from the build stage to the production image
+COPY --chown=node:node --from=build /usr/src/app .
+
+RUN npm ci --omit=dev && npm cache clean --force
+
+EXPOSE 8080 
+
+# Start the server using the production build
 CMD [ "npm", "run", "start:prod" ]
