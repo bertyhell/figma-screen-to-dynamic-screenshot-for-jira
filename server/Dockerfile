@@ -1,6 +1,6 @@
 FROM node:18-alpine As build
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
 COPY package*.json ./
 
@@ -23,9 +23,10 @@ USER node
 
 FROM node:18-alpine As production
 
+WORKDIR /app
 
 # Copy the bundled code from the build stage to the production image
-COPY --chown=node:node --from=build /usr/src/app .
+COPY --chown=node:node --from=build /app /app
 
 RUN npm ci --omit=dev && npm cache clean --force
 
