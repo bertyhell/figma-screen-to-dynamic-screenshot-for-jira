@@ -5,6 +5,8 @@ into the thumbnail url for that screen (in Markdown format).
 
 So you can paste it into a jira ticket and the screenshot will always be up-to-date.
 
+![screenshot-of-moment-of-copy-dynamic-screenshot-from-figma-screen](readme_assets/store-screenshot.png)
+
 ## Installation
 
 ### Server (only for the IT guy in your company)
