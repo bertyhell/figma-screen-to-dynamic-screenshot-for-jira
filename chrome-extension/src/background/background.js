@@ -1,4 +1,4 @@
-const extractFileIdAndNodeId = /https:\/\/(www\.)?figma\.com\/file\/([^/]+?)\/.*node-id=([^&]+)/;
+const extractFileIdAndNodeId = /https:\/\/(www\.)?figma\.com\/design\/([^/]+?)\/.*node-id=([^&]+)/;
 
 function uuidv4() {
   return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
@@ -16,36 +16,24 @@ function sendNotification(title, message) {
   })
 }
 
-async function contentCopy(text) {
-  try {
-    await navigator.clipboard.writeText(text);
-    return {
-      err: null
-    }
-  } catch (err) {
-    return {
-      err
-    }
-  }
-}
+async function addToClipboard(value) {
+  await chrome.offscreen.createDocument({
+    url: 'offscreen.html',
+    reasons: [chrome.offscreen.Reason.CLIPBOARD],
+    justification: 'Write text to the clipboard.'
+  });
 
-function copyToClipboard(textToCopy, tabId) {
-  chrome.scripting.executeScript({
-    target: {tabId},
-    func: contentCopy,
-    args: [textToCopy],
-  }).then(injectionResults => {
-    if (injectionResults[0].result.err) {
-      console.error('Failed to copy url to the clipboard: ' + JSON.stringify(injectionResults[0].result.err));
-      sendNotification('Error', 'Failed to copy the url to your clipboard');
-    } else {
-      sendNotification('Success', 'The markdown code has been copied to your clipboard');
-    }
+  // Now that we have an offscreen document, we can dispatch the
+  // message.
+  chrome.runtime.sendMessage({
+    type: 'copy-data-to-clipboard',
+    target: 'offscreen-doc',
+    data: value
   });
 }
 
 chrome.action.onClicked.addListener((tab) => {
-  if (tab.url.includes('https://www.figma.com/file/') || tab.url.includes('https://figma.com/file/')) {
+  if (tab.url.includes('https://www.figma.com/design/') || tab.url.includes('https://figma.com/design/')) {
     const matches = extractFileIdAndNodeId.exec(tab.url);
     const fileKey = matches[2];
     const nodeId = matches[3];
@@ -72,7 +60,7 @@ chrome.action.onClicked.addListener((tab) => {
         if (options.includeFigmaScreenLink) {
           markdown += '\n' + tab.url;
         }
-        copyToClipboard(markdown, tab.id);
+        addToClipboard(markdown);
       })
   }
 });
