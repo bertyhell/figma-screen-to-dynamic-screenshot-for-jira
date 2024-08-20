@@ -18,7 +18,7 @@ function sendNotification(title, message) {
 
 async function addToClipboard(value) {
   await chrome.offscreen.createDocument({
-    url: 'offscreen.html',
+    url: 'src/offscreen/offscreen.html',
     reasons: [chrome.offscreen.Reason.CLIPBOARD],
     justification: 'Write text to the clipboard.'
   });
